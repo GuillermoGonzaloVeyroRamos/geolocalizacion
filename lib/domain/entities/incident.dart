@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 
 class Incident {
   final String id;

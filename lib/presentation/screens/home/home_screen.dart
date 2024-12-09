@@ -16,9 +16,9 @@ class HomeScreen extends StatelessWidget {
   });
 
     final viewRoutes = [
-      HomeView(),
-      MapView(),
-      PlacesView(),
+      const HomeView(),
+      const MapView(),
+      const PlacesView(),
     ];
 
   @override

@@ -12,10 +12,10 @@ class ButtomNavbar extends StatelessWidget {
       index: index,
       height: 50,
       color: Colors.black,
-      animationDuration: Duration(milliseconds: 300),
+      animationDuration: const Duration(milliseconds: 300),
       backgroundColor: Colors.white,
       buttonBackgroundColor: Colors.black,
-      items: [
+      items: const [
         Icon(Icons.home, color: Colors.white,),
         Icon(Icons.map_outlined, color: Colors.white),
         Icon(Icons.list, color: Colors.white)

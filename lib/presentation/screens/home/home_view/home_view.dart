@@ -11,100 +11,138 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final incidentProvider =
-          Provider.of<IncidentProvider>(context, listen: false);
-      incidentProvider.getIncidents();
-    });
-  }
+  final List<Map<String, dynamic>> places = [
+    {
+      'id': 1,
+      'image':
+          'https://traveler.marriott.com/es/wp-content/uploads/sites/2/2021/02/GI-884646886-Mexico-City-Angel-1920x1080.png',
+      'title': 'Biblioteca',
+      'label': 'Cultura',
+      'description': 'Espacio ideal para estudiar y leer libros.'
+    },
+    {
+      'id': 2,
+      'image':
+          'https://traveler.marriott.com/es/wp-content/uploads/sites/2/2021/02/GI-884646886-Mexico-City-Angel-1920x1080.png',
+      'title': 'Cafetería',
+      'label': 'Comida',
+      'description': 'Deliciosos platillos para disfrutar.'
+    },
+    {
+      'id': 3,
+      'image':
+          'https://traveler.marriott.com/es/wp-content/uploads/sites/2/2021/02/GI-884646886-Mexico-City-Angel-1920x1080.png',
+      'title': 'Laboratorio',
+      'label': 'Tecnología',
+      'description': 'Innovación y tecnología avanzada.'
+    },
+    {
+      'id': 4,
+      'image':
+          'https://traveler.marriott.com/es/wp-content/uploads/sites/2/2021/02/GI-884646886-Mexico-City-Angel-1920x1080.png',
+      'title': 'Auditorio',
+      'label': 'Eventos',
+      'description': 'Eventos y conferencias importantes.'
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final incidentProvider = Provider.of<IncidentProvider>(context);
-    if (incidentProvider.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-    if (incidentProvider.incidents.isEmpty) {
-      return const Center(
-        child: Text("No hay incidentes disponibles"),
-      );
-    }
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-              "Incident Map",
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w900),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InfoCard(
-                    value: incidentProvider.incidents.length.toString(),
-                    title: "Incidentes",
-                    color: Colors.blueGrey),
-                InfoCard(
-                    value: incidentProvider.trafficCount.toString(),
-                    title: "Trafico",
-                    color: Colors.blueGrey),
-                InfoCard(
-                    value: incidentProvider.theftCount.toString(),
-                    title: "Robos",
-                    color: Colors.red),
-              ],
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            const Text(
-              "Ultimos incidentes registrados",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: incidentProvider.incidents.length,
-                itemBuilder: (context, index) {
-                  final incident = incidentProvider.incidents[index];
-                  return Card(
-                    color: Colors.white,
-                    child: ListTile(
-                      leading: const Icon(Icons.warning_amber_rounded,
-                          color: Colors.orangeAccent),
-                      title: Text(
-                        incident.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w900,
-                          color: Colors.black,
-                        ),
-                      ),
-                      subtitle: Text(
-                        incident.address ?? "",
-                        style: TextStyle(color: Colors.grey[500]),
-                      ),
-                      trailing: Icon(
-                        incident.isEmailSent ? Icons.check_circle : Icons.error,
-                        color: incident.isEmailSent ? Colors.green : Colors.red,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            )
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Lugares Importantes'),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(10),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, // Doble fila
+          crossAxisSpacing: 30,
+          mainAxisSpacing: 30,
+          childAspectRatio: 1.5, // Relación tamaño 
         ),
+        itemCount: places.length,
+        itemBuilder: (context, index) {
+          final place = places[index];
+          return Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: InkWell(
+              onTap: () {
+                print('Lugar ${place['id']} seleccionado');
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
+                    child: Image.network(
+                      place['image']!,
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.image_not_supported,
+                            size: 50, color: Colors.grey);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          place['title']!,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 5),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.blueAccent,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            place['label']!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          place['description']!,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.black54,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

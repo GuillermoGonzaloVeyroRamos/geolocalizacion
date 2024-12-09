@@ -38,7 +38,7 @@ class _PlacesViewState extends State<PlacesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Listado de Cards'),
+        title: const Text('Listado de Cards'),
       ),
       body: ListView.builder(
         itemCount: items.length,
@@ -47,7 +47,7 @@ class _PlacesViewState extends State<PlacesView> {
           return Center(
             child: Card(
               elevation: 10,
-              margin: EdgeInsets.symmetric(vertical: 15),
+              margin: const EdgeInsets.symmetric(vertical: 15),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
               ),
@@ -60,14 +60,14 @@ class _PlacesViewState extends State<PlacesView> {
                     ),
                   );
                 },
-                child: Container(
+                child: SizedBox(
                   height: 400,
                   width: 500,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(15),
                           topRight: Radius.circular(15),
                         ),
@@ -85,12 +85,12 @@ class _PlacesViewState extends State<PlacesView> {
                           children: [
                             Text(
                               item['title']!,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Text(
                               item['description']!,
                               style: TextStyle(
@@ -101,13 +101,13 @@ class _PlacesViewState extends State<PlacesView> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             Padding(
-                              padding: EdgeInsets.all(8.0),  // Ajusta el valor según tus necesidades
+                              padding: const EdgeInsets.all(8.0),  // Ajusta el valor según tus necesidades
                               child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),  // Añade espacio dentro del texto
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),  // Añade espacio dentro del texto
                                 color: Colors.blue,
                                 child: Text(
                                   item['label']!,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),

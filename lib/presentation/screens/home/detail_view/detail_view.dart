@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class DetalleCardScreen extends StatelessWidget {
   final int id;
 
-  DetalleCardScreen({required this.id});
+  DetalleCardScreen({super.key, required this.id});
 
   final List<Map<String, dynamic>> items = [
     {
@@ -33,17 +33,17 @@ class DetalleCardScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalle de la Card'),
+        title: const Text('Detalle de la Card'),
       ),
       body: Center(
         child: Card(
           elevation: 10,
-          margin: EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           child: Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -57,15 +57,15 @@ class DetalleCardScreen extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   item['title'],
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   item['description'],
                   style: TextStyle(

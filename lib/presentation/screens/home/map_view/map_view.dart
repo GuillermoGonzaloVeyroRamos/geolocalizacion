@@ -13,139 +13,106 @@ class MapView extends StatefulWidget {
 
 class _MapViewState extends State<MapView> {
   late GoogleMapController mapController;
-  final titleController = TextEditingController();
+  final nameController = TextEditingController();
   final descriptionController = TextEditingController();
-  final Set<Marker> _makers = {};
+  final Set<Marker> _markers = {};
 
   void onTap(LatLng position) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          String selectedType = "Robos";
-          List<String> options = ["Robos", "Tráfico"];
-          return AlertDialog(
-            title: Text("Agregar incidente"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(
-                      labelText: "Titulo",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0))),
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            "Agregar lugar",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: "Nombre",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                 ),
-                const SizedBox(
-                  height: 25,
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: descriptionController,
+                decoration: InputDecoration(
+                  labelText: "Descripción",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
                 ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(
-                      labelText: "Descripción",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0))),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                DropdownButtonFormField(
-                    value: selectedType,
-                    decoration: InputDecoration(
-                        labelText: "Tipo de incidente",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0))),
-                    items: options.map((type) {
-                      return DropdownMenuItem(value: type, child: Text(type));
-                    }).toList(),
-                    onChanged: (value) {
-                      print(value);
-                      if (value != null) {
-                        selectedType = value;
-                      }
-                    }),
-              ],
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("Cancelar")),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    addMarker(position, titleController.text,
-                        descriptionController.text, selectedType);
-                  },
-                  child: Text("Aceptar"))
+              ),
             ],
-          );
-        });
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                "Cancelar",
+                style: TextStyle(color: Colors.redAccent),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                addMarker(position, nameController.text, descriptionController.text);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+              child: const Text("Aceptar"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  Future addMarker(
-      LatLng position, String title, String description, String type) async {
-    final incidentProvider =
-        Provider.of<IncidentProvider>(context, listen: false);
-    final incident = Incident(
-        id: "",
-        title: title,
-        description: description,
-        lat: position.latitude,
-        lng: position.longitude,
-        isEmailSent: false,
-        type: type);
-    try {
-      await incidentProvider.addIncident(incident);
-      setState(() {
-        _makers.add(Marker(
-            markerId: MarkerId(incident.id),
-            position: LatLng(incident.lat, incident.lng),
-            infoWindow: InfoWindow(
-                title: incident.title, snippet: incident.description)));
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    /*   final datasource = IncidentDatasource();
-    datasource.getIncidents(); */
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadMarkers();
-    });
-  }
-
-  void loadMarkers() async {
-    final incidentProvider =
-        Provider.of<IncidentProvider>(context, listen: false);
-    await incidentProvider.getIncidents();
+  void addMarker(LatLng position, String name, String description) {
     setState(() {
-      _makers.clear();
-      for (var incident in incidentProvider.incidents) {
-        _makers.add(Marker(
-            markerId: MarkerId(incident.id),
-            position: LatLng(incident.lat, incident.lng),
-            infoWindow: InfoWindow(
-                title: incident.title, snippet: incident.description)));
-      }
+      _markers.add(Marker(
+        markerId: MarkerId(DateTime.now().toIso8601String()),
+        position: position,
+        infoWindow: InfoWindow(title: name, snippet: description),
+      ));
     });
+    nameController.clear();
+    descriptionController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      onMapCreated: (controller) {
-        mapController = controller;
-      },
-      initialCameraPosition: const CameraPosition(
-          target: LatLng(21.15252913173772, -101.71140780611424), zoom: 18),
-      onLongPress: onTap,
-      markers: _makers,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Mapa de la Escuela"),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: GoogleMap(
+        onMapCreated: (controller) {
+          mapController = controller;
+        },
+        initialCameraPosition: const CameraPosition(
+          target: LatLng(21.15252913173772, -101.71140780611424),
+          zoom: 18,
+        ),
+        onLongPress: onTap,
+        markers: _markers,
+      ),
     );
   }
 }
