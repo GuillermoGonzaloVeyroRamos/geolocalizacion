@@ -1,82 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:geolocalizacion/domain/providers/place_provider.dart';
+import 'package:provider/provider.dart';
 
 
 class DetalleCardScreen extends StatelessWidget {
-  final int id;
+  final String id;
 
-  DetalleCardScreen({super.key, required this.id});
-
-  final List<Map<String, dynamic>> items = [
-    {
-      'id': 1,
-      'image': 'https://traveler.marriott.com/es/wp-content/uploads/sites/2/2021/02/GI-884646886-Mexico-City-Angel-1920x1080.png',
-      'title': 'Card 1',
-      'description': 'Esta es la descripción de la Card 1. Es una tarjeta impresionante.',
-    },
-    {
-      'id': 2,
-      'image': 'https://traveler.marriott.com/es/wp-content/uploads/sites/2/2021/02/GI-884646886-Mexico-City-Angel-1920x1080.png',
-      'title': 'Card 2',
-      'description': 'Esta es la descripción de la Card 2. Otra tarjeta interesante.',
-    },
-    {
-      'id': 3,
-      'image': 'https://traveler.marriott.com/es/wp-content/uploads/sites/2/2021/02/GI-884646886-Mexico-City-Angel-1920x1080.png0',
-      'title': 'Card 3',
-      'description': 'Esta es la descripción de la Card 3. Más detalles aquí.',
-    },
-  ];
-
-  @override
+   const DetalleCardScreen({Key? key, required this.id});
+@override
   Widget build(BuildContext context) {
-    final item = items.firstWhere((element) => element['id'] == id);
+    // Obtener el lugar por ID desde el provider
+    final incidentProvider = Provider.of<PlaceProvider>(context);
+    final place = incidentProvider.places.firstWhere(
+      (incident) => incident.id == id
+    );
+
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalle de la Card'),
+        title: const Text("Detalle del lugar"),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
       ),
-      body: Center(
-        child: Card(
-          elevation: 10,
-          margin: const EdgeInsets.all(20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.network(
-                    item['image'],
-                    height: 400,
-                    width: 400,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  item['title'],
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  item['description'],
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey.shade700,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Image.network(
+                place.imageUrl,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.image_not_supported,
+                      size: 50, color: Colors.grey);
+                },
+              ),
             ),
-          ),
+            const SizedBox(height: 30),
+            Text(
+              place.title,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 30),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.blueAccent,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                place.category,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Text(
+              'Descripción:',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              place.description,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black54,
+              ),
+            ),
+          ],
         ),
       ),
     );

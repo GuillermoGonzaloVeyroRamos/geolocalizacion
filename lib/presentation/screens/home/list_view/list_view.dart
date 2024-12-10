@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:geolocalizacion/domain/providers/place_provider.dart';
 import 'package:geolocalizacion/presentation/screens/home/detail_view/detail_view.dart';
+import 'package:provider/provider.dart';
 
 
 class PlacesView extends StatefulWidget {
@@ -10,61 +12,58 @@ class PlacesView extends StatefulWidget {
 }
 
 class _PlacesViewState extends State<PlacesView> {
-  final List<Map<String, dynamic>> items = [
-    {
-      'id': 1,
-      'image': 'https://traveler.marriott.com/es/wp-content/uploads/sites/2/2021/02/GI-884646886-Mexico-City-Angel-1920x1080.png',
-      'title': 'Estatua Arquitectura',
-      'description': 'Esta es una breve descripción de la Card 1.',
-      'label': 'Arte'
-    },
-    {
-      'id': 2,
-      'image': 'https://traveler.marriott.com/es/wp-content/uploads/sites/2/2021/02/GI-884646886-Mexico-City-Angel-1920x1080.png',
-      'title': 'Card 2',
-      'description': 'Esta es una breve descripción de la Card 2.',
-      'label': 'Label 1'
-    },
-    {
-      'id': 3,
-      'image': 'https://traveler.marriott.com/es/wp-content/uploads/sites/2/2021/02/GI-884646886-Mexico-City-Angel-1920x1080.png',
-      'title': 'Card 3',
-      'description': 'Esta es una breve descripción de la Card 3.',
-      'label': 'Label 1'
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Listado de Cards'),
+        title: const Text('Listado de Lugares'),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
       ),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index];
-          return Center(
-            child: Card(
-              elevation: 10,
-              margin: const EdgeInsets.symmetric(vertical: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetalleCardScreen(id: item['id']),
-                    ),
-                  );
-                },
-                child: SizedBox(
-                  height: 400,
-                  width: 500,
+      body: Consumer<PlaceProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          // Obtener todos los lugares
+          final places = provider.places;
+
+          if (places.isEmpty) {
+            return const Center(
+              child: Text('No hay lugares disponibles.'),
+            );
+          }
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(10),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // Número de columnas
+              crossAxisSpacing: 30,
+              mainAxisSpacing: 30,
+              childAspectRatio: 2.00, // Relación de tamaño entre ancho y alto
+            ),
+            itemCount: places.length,
+            itemBuilder: (context, index) {
+              final place = places[index];
+              return Card(
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DetalleCardScreen(id: place.id),
+                      ),
+                    );
+                  },
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ClipRRect(
                         borderRadius: const BorderRadius.only(
@@ -72,58 +71,66 @@ class _PlacesViewState extends State<PlacesView> {
                           topRight: Radius.circular(15),
                         ),
                         child: Image.network(
-                          item['image']!,
-                          height: 200,
-                          width: 500,
+                          place.imageUrl,
+                          height: 150,
+                          width: double.infinity,
                           fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.image_not_supported,
+                                size: 50, color: Colors.grey);
+                          },
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              item['title']!,
+                              place.title,
                               style: const TextStyle(
-                                fontSize: 24,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 5),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.blueAccent,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                place.category,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 5),
                             Text(
-                              item['description']!,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey.shade700,
+                              place.description,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black54,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),  // Ajusta el valor según tus necesidades
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),  // Añade espacio dentro del texto
-                                color: Colors.blue,
-                                child: Text(
-                                  item['label']!,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            )
                           ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),

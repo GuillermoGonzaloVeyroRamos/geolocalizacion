@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:geolocalizacion/presentation/screens/home/home_view/home_view.dart';
 import 'package:geolocalizacion/presentation/screens/home/list_view/list_view.dart';
