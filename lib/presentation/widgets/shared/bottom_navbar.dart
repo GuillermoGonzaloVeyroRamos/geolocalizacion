@@ -11,10 +11,10 @@ class ButtomNavbar extends StatelessWidget {
     return CurvedNavigationBar(
       index: index,
       height: 50,
-      color: Colors.black,
+      color: Color.fromRGBO(207, 0, 0, 30),
       animationDuration: const Duration(milliseconds: 300),
       backgroundColor: Colors.white,
-      buttonBackgroundColor: Colors.black,
+      buttonBackgroundColor: Color.fromRGBO(207, 0, 0, 30),
       items: const [
         Icon(Icons.home, color: Colors.white,),
         Icon(Icons.map_outlined, color: Colors.white),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocalizacion/config/app_routes.dart';
-import 'package:geolocalizacion/domain/datasources/incident_datasource.dart';
-import 'package:geolocalizacion/domain/providers/incident_provider.dart';
+import 'package:geolocalizacion/domain/datasources/place_datasource.dart';
+import 'package:geolocalizacion/domain/providers/place_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => IncidentProvider(IncidentDatasource()))
+        ChangeNotifierProvider(create: (_) => PlaceProvider(PlaceDatasource()))
       ],
       child: MaterialApp.router(
         routerConfig: appRouter,
