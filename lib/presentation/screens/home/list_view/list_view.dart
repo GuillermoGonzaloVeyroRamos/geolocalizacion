@@ -36,16 +36,15 @@ class _PlacesViewState extends State<PlacesView> {
 
           return LayoutBuilder(
             builder: (context, constraints) {
-              // Ajuste dinámico del número de columnas según el ancho de pantalla
-              int crossAxisCount = constraints.maxWidth > 600 ? 3 : 2;
-              double childAspectRatio = constraints.maxWidth > 600 ? 1.5 : 2.0;
+              int crossAxisCount = constraints.maxWidth > 400 ? 2 : 1;
+              double childAspectRatio = constraints.maxWidth > 600 ? 2.0 : 1.0;
 
               return GridView.builder(
                 padding: const EdgeInsets.all(10),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
                   childAspectRatio: childAspectRatio,
                 ),
                 itemCount: places.length,
