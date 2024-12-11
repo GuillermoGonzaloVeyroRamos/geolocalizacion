@@ -64,9 +64,9 @@ class DetalleCardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-            Text(
+            const Text(
               'Descripción:',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
